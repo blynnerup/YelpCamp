@@ -1,0 +1,31 @@
+{
+  "name": "yelp",
+  "version": "1.0.0",
+  "description": "YelpCamp v 1",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blynnerup/YelpCamp.git"
+  },
+  "keywords": [
+    "html",
+    "express",
+    "node.js",
+    "css",
+    "js",
+    "mongoDB"
+  ],
+  "author": "Brian Lynnerup Pedersen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blynnerup/YelpCamp/issues"
+  },
+  "homepage": "https://github.com/blynnerup/YelpCamp#readme",
+  "dependencies": {
+    "ejs": "^2.4.2",
+    "express": "^4.13.4"
+  }
+}
