@@ -55,15 +55,16 @@ app.get("/campgrounds/new", function(req, res) {
 // SHOW - shows more info about one campground
 app.get("/campgrounds/:id", function(req, res){
     // find the campground with provided ID
-    Campground.findById(req.params.id, function(err, foundCamp){
+    Campground.findById(req.params.id).populate("comments").exec(function(err, foundCamp){
         if(err){
             console.log(err);
         } else {
+            console.log(foundCamp);
             // render show template with that campground
            res.render("show", {campground: foundCamp});
         }
-    })
-})
+    });
+});
 
 app.listen(process.env.PORT, process.env.IP, function(){
    console.log("The YelpCamp server has started!"); 
