@@ -1,36 +1,16 @@
 var express     = require("express"),
     app         = express(),
     bodyParser  = require("body-parser"),
-    mongoose    = require("mongoose");
+    mongoose    = require("mongoose"),
+    Campground  = require("./models/campground"), // this returns the campground model (mongoose model)
+    //Comment     = require("./models/comment"),
+    //User        = require("./models/user"),
+    seedDb       = require("./seeds"); // Get the seed function from the seeds.js file - used for nuking (and reinitializeing the db with some data) the db for a clean start.
 
-
+seedDb();
 mongoose.connect("mongodb://localhost/yelpcamp");
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
-
-// Schema setup
-var campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-var Campground = mongoose.model("Campground", campgroundSchema);
-
-// Campground.create(
-//     {
-//     name: "Granite Hill", 
-//     image: "https://farm9.staticflickr.com/8486/8240036928_1a31fbbe9e.jpg",
-//     description: "This is a huge granite hill, no bathrooms, no water. Beautiful granite!"
-//     }, function(err, campground){
-//         if(err){
-//             console.log(err);
-//         } else {
-//             console.log("Newly created campground:");
-//             console.log(campground);
-//         }
-//     });
-
 
 app.get("/", function(req, res){
     res.render("landing");
