@@ -5,6 +5,7 @@ var express         = require("express"),
     passport        = require("passport"),
     localStrategy   = require("passport-local"),
     User            = require("./models/user"),
+    methodOverride  = require("method-override"),
     seedDb          = require("./seeds"); // Get the seed function from the seeds.js file - used for nuking (and reinitializeing the db with some data) the db for a clean start.
 
 // Requring routes  
@@ -16,6 +17,7 @@ mongoose.connect("mongodb://localhost/yelpcamp");
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"));
 
 // Seed the database
 // seedDb();
