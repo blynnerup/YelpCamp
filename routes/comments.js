@@ -34,13 +34,65 @@ router.post("/", isLoggedIn,function(req, res){
                     comment.save()
                     campgorund.comments.push(comment);
                     campgorund.save();
-                    console.log(comment);
                     res.redirect('/campgrounds/' + campgorund._id);
                 }
             });
         }
     });
 });
+
+// Comments edit route
+router.get("/:comment_id/edit", checkCommentOwnership,function(req, res){
+    Comment.findById(req.params.comment_id, function(err, foundComment){
+        if(err){
+            res.redirect("back");
+        } else {
+            res.render("comments/edit", { campground_id: req.params.id, comment: foundComment });      
+        }
+    });
+});
+
+// Comments update route
+router.put("/:comment_id", function(req, res){
+    Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment){
+       if(err){
+           res.redirect("back");
+       } else {
+           res.redirect("/campgrounds/" + req.params.id);
+       }
+    });
+});
+
+// Comments destroy route -- REMEMBER THAT THE DESTROY BUTTON IN THE HTML NEEDS TO BE A FORM AS A HREF ONLY MAKES A GET REQUEST!!!
+router.delete("/:comment_id", checkCommentOwnership, function(req, res){
+    Comment.findByIdAndRemove(req.params.comment_id, function(err){
+        if(err){
+            res.redirect("back");
+        } else {
+            res.redirect("/campgrounds/" + req.params.id);
+        }
+    });
+});
+
+// Check ownership of comment
+function checkCommentOwnership(req, res, next){
+    if(req.isAuthenticated()){
+        Comment.findById(req.params.comment_id, function(err, foundComment){
+            if(err){
+                res.redirect("/back");
+            } else {
+                // does the user own the comment?
+                if(foundComment.author.id.equals(req.user._id)){ // cannot do === as it's an (mongoose) object compared to a string. .equals is a mongoose method that allows for checking if properties are equal.
+                    next(); // if it's the owner, run the next part of the function   
+                } else {
+                    res.redirect("back"); // send them back to where they came!
+                }
+            }
+        });
+    } else {
+        res.redirect("back");
+    }
+}
 
 // Middleware
 function isLoggedIn(req, res, next){
