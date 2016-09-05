@@ -14,7 +14,11 @@ var commentRoutes       = require("./routes/comments"),
     campgroundRoutes    = require("./routes/campgrounds"),
     indexRoutes          = require("./routes/index");
 
-mongoose.connect("mongodb://localhost/yelpcamp");
+var url = process.env.DATABASEURL || "mongodb://localhost/yelpcamp"; // Use the first database - if no - use the second
+console.log(process.env.DATABASEURL); // In order for this to work you need to do (commandline): export DATABASEURL = mongodb://localhost/yelpcamp (this is how you create environment variables).
+
+//mongoose.connect("mongodb://localhost/yelpcamp");
+mongoose.connect(url);
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
