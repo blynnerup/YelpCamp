@@ -26,14 +26,14 @@ router.post("/", middleware.isLoggedIn,function(req, res){
         } else {
             Comment.create(req.body.comment, function(err, comment){
                 if(err){
-                    req.flash("error", "Sorry, something went wrong..")
+                    req.flash("error", "Sorry, something went wrong..");
                     console.log(err);
                 } else {
                     // add username and id to comment
                     comment.author.id = req.user._id;
                     comment.author.username = req.user.username;
                     // save comment
-                    comment.save()
+                    comment.save();
                     campgorund.comments.push(comment);
                     campgorund.save();
                     req.flash("success", "Comment created");
