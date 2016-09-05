@@ -72,7 +72,7 @@ router.delete("/:comment_id", middleware.checkCommentOwnership, function(req, re
         if(err){
             res.redirect("back");
         } else {
-            req.flash("success", "Comment deleted");
+            req.flash("success", "Comment deleted"); // Flash message, to be displayed when this happens (Key value pair, a flash message is ALWAYs an array, so check in the HTML check both if present and length of success)
             res.redirect("/campgrounds/" + req.params.id);
         }
     });
