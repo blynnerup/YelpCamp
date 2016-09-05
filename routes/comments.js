@@ -2,9 +2,10 @@ var express = require("express");
 var router = express.Router({mergeParams: true}); // merges the params from comments and campgrounds together - otherwise the add new comment will not work
 var Campground = require("../models/campground");
 var Comment = require("../models/comment");
+var middleware = require("../middleware"); // Requires the index.js file when nothing else is specified 
 
 // New comment
-router.get("/new", isLoggedIn,function(req, res){
+router.get("/new", middleware.isLoggedIn,function(req, res){
     // find campground by id
     Campground.findById(req.params.id, function(err, campground){
         if(err){
@@ -16,7 +17,7 @@ router.get("/new", isLoggedIn,function(req, res){
 });
 
 // Create comment
-router.post("/", isLoggedIn,function(req, res){
+router.post("/", middleware.isLoggedIn,function(req, res){
     // lookup campground using ID
     Campground.findById(req.params.id, function(err, campgorund){
         if(err){
@@ -42,7 +43,7 @@ router.post("/", isLoggedIn,function(req, res){
 });
 
 // Comments edit route
-router.get("/:comment_id/edit", checkCommentOwnership,function(req, res){
+router.get("/:comment_id/edit", middleware.checkCommentOwnership,function(req, res){
     Comment.findById(req.params.comment_id, function(err, foundComment){
         if(err){
             res.redirect("back");
@@ -64,7 +65,7 @@ router.put("/:comment_id", function(req, res){
 });
 
 // Comments destroy route -- REMEMBER THAT THE DESTROY BUTTON IN THE HTML NEEDS TO BE A FORM AS A HREF ONLY MAKES A GET REQUEST!!!
-router.delete("/:comment_id", checkCommentOwnership, function(req, res){
+router.delete("/:comment_id", middleware.checkCommentOwnership, function(req, res){
     Comment.findByIdAndRemove(req.params.comment_id, function(err){
         if(err){
             res.redirect("back");
@@ -73,34 +74,5 @@ router.delete("/:comment_id", checkCommentOwnership, function(req, res){
         }
     });
 });
-
-// Check ownership of comment
-function checkCommentOwnership(req, res, next){
-    if(req.isAuthenticated()){
-        Comment.findById(req.params.comment_id, function(err, foundComment){
-            if(err){
-                res.redirect("/back");
-            } else {
-                // does the user own the comment?
-                if(foundComment.author.id.equals(req.user._id)){ // cannot do === as it's an (mongoose) object compared to a string. .equals is a mongoose method that allows for checking if properties are equal.
-                    next(); // if it's the owner, run the next part of the function   
-                } else {
-                    res.redirect("back"); // send them back to where they came!
-                }
-            }
-        });
-    } else {
-        res.redirect("back");
-    }
-}
-
-// Middleware
-function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()){
-        return next();
-    } else {
-        res.redirect("/login");
-    }
-}
 
 module.exports = router;
